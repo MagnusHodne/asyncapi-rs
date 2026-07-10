@@ -86,7 +86,7 @@ impl SchemaObject {
     skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct AsyncApiSchema {
     /// Adds support for polymorphism. The discriminator is the schema property name that
     /// is used to differentiate between other schema that inherit this schema. The property
@@ -118,4 +118,36 @@ pub enum SchemaDefinition {
     Ref(ReferenceObject),
     MultiFormat(MultiFormatSchemaObject),
     Schema(SchemaObject),
+}
+
+#[cfg(all(test, feature = "serde"))]
+mod serde_test {
+    use super::{AsyncApiSchema, SchemaObject};
+    use serde_json::json;
+    #[test]
+    fn bool_schema() -> anyhow::Result<()> {
+        let json = json!(false);
+        let schema: SchemaObject = serde_json::from_value(json)?;
+        assert!(matches!(schema, SchemaObject::Bool(false)));
+        Ok(())
+    }
+
+    #[test]
+    fn empty_schema() -> anyhow::Result<()> {
+        let json = json!({});
+        let schema: SchemaObject = serde_json::from_value(json)?;
+        assert!(matches!(
+            schema,
+            SchemaObject::Schema(AsyncApiSchema { .. })
+        ));
+        Ok(())
+    }
+
+    #[test]
+    fn serialize_empty_schema() -> anyhow::Result<()> {
+        let schema = SchemaObject::Schema(AsyncApiSchema::default());
+        let json = serde_json::to_value(&schema)?;
+        assert_eq!(json!({}), json);
+        Ok(())
+    }
 }
