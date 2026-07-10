@@ -132,6 +132,35 @@ pub enum SchemaDefinition {
     Schema(SchemaObject),
 }
 
+impl From<ReferenceObject> for SchemaDefinition {
+    fn from(value: ReferenceObject) -> Self {
+        Self::Ref(value)
+    }
+}
+
+impl From<MultiFormatSchemaObject> for SchemaDefinition {
+    fn from(value: MultiFormatSchemaObject) -> Self {
+        Self::MultiFormat(value)
+    }
+}
+
+impl From<SchemaObject> for SchemaDefinition {
+    fn from(value: SchemaObject) -> Self {
+        Self::Schema(value)
+    }
+}
+
+impl From<bool> for SchemaDefinition {
+    fn from(value: bool) -> Self {
+        Self::Schema(value.into())
+    }
+}
+impl From<AsyncApiSchema> for SchemaDefinition {
+    fn from(value: AsyncApiSchema) -> Self {
+        Self::Schema(value.into())
+    }
+}
+
 #[cfg(all(test, feature = "serde"))]
 mod serde_test {
     use super::{AsyncApiSchema, SchemaObject};
