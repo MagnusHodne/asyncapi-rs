@@ -132,6 +132,60 @@ pub enum SchemaDefinition {
     Schema(SchemaObject),
 }
 
+impl SchemaDefinition {
+    pub fn as_schema_object(&self) -> Option<&SchemaObject> {
+        if let Self::Schema(s) = self {
+            Some(s)
+        } else {
+            None
+        }
+    }
+
+    pub fn as_asyncapi_schema(&self) -> Option<&AsyncApiSchema> {
+        if let Self::Schema(s) = self {
+            s.as_schema()
+        } else {
+            None
+        }
+    }
+    pub fn as_reference_object(&self) -> Option<&ReferenceObject> {
+        if let Self::Ref(r) = self {
+            Some(r)
+        } else {
+            None
+        }
+    }
+    pub fn as_multi_format_schema(&self) -> Option<&MultiFormatSchemaObject> {
+        if let Self::MultiFormat(mf) = self {
+            Some(mf)
+        } else {
+            None
+        }
+    }
+
+    pub fn into_asyncapi_schema(self) -> Option<AsyncApiSchema> {
+        if let Self::Schema(SchemaObject::Schema(s)) = self {
+            Some(s)
+        } else {
+            None
+        }
+    }
+    pub fn into_reference_object(self) -> Option<ReferenceObject> {
+        if let Self::Ref(r) = self {
+            Some(r)
+        } else {
+            None
+        }
+    }
+    pub fn into_multi_format_schema(self) -> Option<MultiFormatSchemaObject> {
+        if let Self::MultiFormat(mf) = self {
+            Some(mf)
+        } else {
+            None
+        }
+    }
+}
+
 impl From<ReferenceObject> for SchemaDefinition {
     fn from(value: ReferenceObject) -> Self {
         Self::Ref(value)
