@@ -22,7 +22,7 @@ type Component<T> = Option<HashMap<String, T>>;
     derive(Serialize, Deserialize),
     serde(rename_all = "camelCase")
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ComponentsObject {
     pub schemas: Component<SchemaDefinition>,
     pub servers: Component<RefOr<ServerObject>>,

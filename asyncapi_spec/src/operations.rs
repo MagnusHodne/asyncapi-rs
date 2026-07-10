@@ -36,6 +36,25 @@ pub struct OperationObject {
     pub reply: Option<RefOr<OperationReplyObject>>,
 }
 
+impl OperationObject {
+    pub fn new(action: Action, channel: ReferenceObject) -> Self {
+        Self {
+            action,
+            channel,
+            title: None,
+            summary: None,
+            description: None,
+            security: None,
+            tags: None,
+            external_docs: None,
+            bindings: None,
+            traits: None,
+            messages: None,
+            reply: None,
+        }
+    }
+}
+
 /// An operation action
 #[cfg_attr(
     feature = "serde",
@@ -54,7 +73,7 @@ pub enum Action {
     skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OperationReplyObject {
     pub address: Option<RefOr<OperationReplyAddressObject>>,
     pub channel: Option<ReferenceObject>,
@@ -67,7 +86,7 @@ pub struct OperationReplyObject {
     derive(Serialize, Deserialize),
     serde(rename_all = "lowercase")
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OperationTraitObject {
     pub title: Option<String>,
     pub summary: Option<String>,
@@ -90,13 +109,22 @@ pub struct OperationReplyAddressObject {
     pub location: String,
 }
 
+impl OperationReplyAddressObject {
+    pub fn new(location: impl Into<String>) -> Self {
+        Self {
+            location: location.into(),
+            description: None,
+        }
+    }
+}
+
 /// An [Operation Bindings Object](https://www.asyncapi.com/docs/reference/specification/v3.1.0#operationBindingsObject)
 #[cfg_attr(
     feature = "serde",
     skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OperationBindingsObject {
     pub http: Option<Value>,
     pub ws: Option<Value>,

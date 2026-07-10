@@ -9,3 +9,12 @@ pub struct ExternalDocumentationObject {
     pub description: Option<String>,
     pub url: Url,
 }
+
+impl ExternalDocumentationObject {
+    pub fn new(url: impl Into<Url>) -> Self {
+        Self {
+            url: url.into(),
+            description: None,
+        }
+    }
+}

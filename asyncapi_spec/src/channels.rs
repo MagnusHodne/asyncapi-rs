@@ -20,7 +20,7 @@ pub type ChannelsObject = HashMap<String, RefOr<ChannelObject>>;
     derive(Serialize, Deserialize),
     serde(rename_all = "camelCase")
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ChannelObject {
     pub address: Option<String>,
     pub messages: Option<MessagesObject>,
@@ -43,7 +43,7 @@ pub type ParametersObject = HashMap<String, RefOr<ParameterObject>>;
     derive(Serialize, Deserialize),
     serde(rename_all = "camelCase")
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ParameterObject {
     #[cfg_attr(feature = "serde", serde(rename = "enum"))]
     pub _enum: Option<Vec<String>>,
@@ -59,7 +59,7 @@ pub struct ParameterObject {
     skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ChannelBindingsObject {
     pub http: Option<Value>,
     pub ws: Option<Value>,

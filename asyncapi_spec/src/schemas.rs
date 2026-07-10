@@ -44,11 +44,50 @@ fn default_schema_format() -> String {
 #[cfg_attr(
     feature = "serde",
     skip_serializing_none,
+    derive(Serialize, Deserialize),
+    serde(untagged)
+)]
+#[derive(Clone, Debug)]
+pub enum SchemaObject {
+    /// A schema is considered valid if it's just a bool
+    Bool(bool),
+    Schema(AsyncApiSchema),
+}
+
+impl SchemaObject {
+    /// Returns a reference to the schema variant if the SchemaObject is a schema
+    pub fn as_schema(&self) -> Option<&AsyncApiSchema> {
+        if let Self::Schema(schema) = self {
+            Some(schema)
+        } else {
+            None
+        }
+    }
+    /// Returns a reference to the bool value if the schema is a bool value
+    pub fn as_bool(&self) -> Option<bool> {
+        if let Self::Bool(b) = self {
+            Some(*b)
+        } else {
+            None
+        }
+    }
+    /// Takes ownership of the schema value if the SchemaObject is a schema
+    pub fn into_schema(self) -> Option<AsyncApiSchema> {
+        if let Self::Schema(schema) = self {
+            Some(schema)
+        } else {
+            None
+        }
+    }
+}
+
+#[cfg_attr(
+    feature = "serde",
+    skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
 #[derive(Clone, Debug)]
-// TODO: Add more known fields to this object
-pub struct SchemaObject {
+pub struct AsyncApiSchema {
     /// Adds support for polymorphism. The discriminator is the schema property name that
     /// is used to differentiate between other schema that inherit this schema. The property
     /// name used MUST be defined at this schema and it MUST be in the `required` property

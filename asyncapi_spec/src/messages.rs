@@ -17,7 +17,7 @@ pub type MessagesObject = HashMap<String, RefOr<MessageObject>>;
     derive(Serialize, Deserialize),
     serde(rename_all = "camelCase")
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct MessageObject {
     pub headers: Option<SchemaDefinition>,
     pub payload: Option<SchemaDefinition>,
@@ -40,7 +40,7 @@ pub struct MessageObject {
     skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct MessageExampleObject {
     pub headers: Option<HashMap<String, Value>>,
     pub payload: Option<Value>,
@@ -55,7 +55,7 @@ pub struct MessageExampleObject {
     derive(Serialize, Deserialize),
     serde(rename_all = "camelCase")
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct MessageTraitObject {
     pub headers: Option<SchemaDefinition>,
     pub correlation_id: Option<RefOr<CorrelationIdObject>>,
@@ -82,13 +82,22 @@ pub struct CorrelationIdObject {
     pub location: String,
 }
 
+impl CorrelationIdObject {
+    pub fn new(location: impl Into<String>) -> Self {
+        Self {
+            location: location.into(),
+            description: None,
+        }
+    }
+}
+
 /// A [Message Bindings Object](https://www.asyncapi.com/docs/reference/specification/v3.1.0#messageBindingsObject)
 #[cfg_attr(
     feature = "serde",
     skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct MessageBindingsObject {
     pub http: Option<Value>,
     pub ws: Option<Value>,
@@ -115,8 +124,8 @@ pub struct MessageBindingsObject {
 #[cfg(all(test, feature = "serde"))]
 mod serde_test {
     use super::MessageObject;
+    use crate::{AsyncApiSchema, SchemaDefinition, SchemaObject};
     use crate::{RefOr, ReferenceObject};
-    use crate::{SchemaDefinition, SchemaObject};
 
     use serde_json::{Value, json};
 
@@ -129,9 +138,12 @@ mod serde_test {
                 "$ref": "#/some/ref"
             }
         }))?;
-        assert!(matches!(schema.discriminator, Some(d) if d == "kind"));
+        let schema = schema
+            .as_schema()
+            .ok_or_else(|| anyhow::anyhow!("{schema:?} should be a SchemaObject::Schema"))?;
+        assert!(matches!(&schema.discriminator, Some(d) if d == "kind"));
         assert!(
-            matches!(schema.external_docs, Some(RefOr::Ref(ReferenceObject { _ref})) if _ref == "#/some/ref")
+            matches!(&schema.external_docs, Some(RefOr::Ref(ReferenceObject { _ref})) if _ref == "#/some/ref")
         );
         assert!(matches!(schema.__schema.get("type"), Some(Value::String(t)) if t == "object"));
         Ok(())
@@ -145,7 +157,7 @@ mod serde_test {
         }))?;
         assert!(matches!(
             schema.payload,
-            Some(SchemaDefinition::Schema(SchemaObject { __schema, .. }))
+            Some(SchemaDefinition::Schema(SchemaObject::Schema(AsyncApiSchema { __schema, .. })))
                 if __schema.get("type").is_some_and(|t| t == "string")
         ));
         Ok(())

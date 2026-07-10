@@ -10,11 +10,17 @@ pub struct ReferenceObject {
 }
 
 impl ReferenceObject {
+    /// Creates a reference object from a reference string
+    ///
+    /// No parsing is performed on the input
+    pub fn new(reference: impl Into<String>) -> Self {
+        Self {
+            _ref: reference.into(),
+        }
+    }
     /// Construct a reference to a schema name within the components object
     pub fn schema(schema_name: impl std::fmt::Display) -> Self {
-        Self {
-            _ref: format!("#/components/schemas/{schema_name}"),
-        }
+        Self::new(format!("#/components/schemas/{schema_name}"))
     }
 }
 

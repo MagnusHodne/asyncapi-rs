@@ -35,7 +35,7 @@ pub use operations::{
 };
 pub use reference::{RefOr, ReferenceObject};
 pub use root::AsyncAPIObject;
-pub use schemas::{MultiFormatSchemaObject, SchemaDefinition, SchemaObject};
+pub use schemas::{AsyncApiSchema, MultiFormatSchemaObject, SchemaDefinition, SchemaObject};
 pub use security_schemes::{
     ApiKeyIn, CommonVariantFields, HttpApiKeyIn, OauthFlowsObject, Scopes, SecuritySchemeObject,
     SecuritySchemeType,

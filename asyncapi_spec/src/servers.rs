@@ -36,6 +36,25 @@ pub struct ServerObject {
     pub bindings: Option<RefOr<ServerBindingsObject>>,
 }
 
+impl ServerObject {
+    pub fn new(host: impl Into<String>, protocol: impl Into<String>) -> Self {
+        Self {
+            host: host.into(),
+            protocol: protocol.into(),
+            protocol_version: None,
+            pathname: None,
+            description: None,
+            title: None,
+            summary: None,
+            variables: None,
+            security: None,
+            tags: None,
+            external_docs: None,
+            bindings: None,
+        }
+    }
+}
+
 /// A [Server Variable Object](https://www.asyncapi.com/docs/reference/specification/v3.1.0#serverVariableObject)
 #[cfg_attr(
     feature = "serde",
@@ -43,7 +62,7 @@ pub struct ServerObject {
     derive(Serialize, Deserialize),
     serde(rename_all = "camelCase")
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ServerVariableObject {
     #[cfg_attr(feature = "serde", serde(rename = "enum"))]
     pub _enum: Option<Vec<String>>,
@@ -58,7 +77,7 @@ pub struct ServerVariableObject {
     skip_serializing_none,
     derive(Serialize, Deserialize)
 )]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ServerBindingsObject {
     pub http: Option<Value>,
     pub ws: Option<Value>,
