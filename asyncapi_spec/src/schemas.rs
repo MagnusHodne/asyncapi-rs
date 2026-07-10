@@ -81,6 +81,18 @@ impl SchemaObject {
     }
 }
 
+impl From<bool> for SchemaObject {
+    fn from(value: bool) -> Self {
+        Self::Bool(value)
+    }
+}
+
+impl From<AsyncApiSchema> for SchemaObject {
+    fn from(value: AsyncApiSchema) -> Self {
+        Self::Schema(value)
+    }
+}
+
 #[cfg_attr(
     feature = "serde",
     skip_serializing_none,
