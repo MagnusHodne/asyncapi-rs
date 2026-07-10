@@ -1,0 +1,25 @@
+[package]
+name = "asyncapi_spec"
+version = "0.1.0"
+description = "The AsyncAPI spec expressed through the Rust type system"
+repository.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde = { optional = true, workspace = true }
+serde_with = { optional = true, workspace = true }
+serde_json = { workspace = true }
+url = { optional = true, workspace = true }
+
+[dev-dependencies]
+anyhow = { workspace = true }
+rstest = { workspace = true }
+
+[features]
+default = []
+serde = ["dep:serde", "dep:serde_with", "url/serde"]
+url = ["dep:url"]
+
+[lints]
+workspace = true

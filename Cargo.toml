@@ -1,0 +1,19 @@
+[workspace]
+resolver = "2"
+members = ["asyncapi_*"]
+
+[workspace.dependencies]
+anyhow = { version = "1.0.103" }
+rstest = { version = "0.26.1" }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.150" }
+serde_with = { version = "3.21.0" }
+url = { version = "2.5.8" }
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+
+[workspace.package]
+repository = "https://github.com/MagnusHodne/asyncapi-rs"
+edition = "2024"
+authors = ["Magnus Hodne"]
